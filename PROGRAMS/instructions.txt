@@ -16,14 +16,14 @@ To run all tests, run the following command:
 pytest
 ```
 
-This should show all 8 tests are passing.
+This should show all tests are passing.
 
 ## Full Run
 
 All datasets should already by located in the DATA folder. Additionally, all problem outputs should already be located in the OUTPUT folder. To re-run my final main script on each dataset, simply navigate to the PROGRAMS/ directory and run the following:
 
 ```bash
-python main_PA2.py --full_run
+python main_PA3.py --full_run
 ```
 
 This will overwrite any files that are already present in the OUTPUT folder.
@@ -33,7 +33,7 @@ This will overwrite any files that are already present in the OUTPUT folder.
 To run the main script on a single provided dataset, run:
 
 ```bash
-python main.py --dataset_prefix <dataset_prefix>
+python main_PA3.py --dataset_prefix <dataset_prefix>
 ```
 
-Where dataset prefix is the prefix to one of the datasets in the DATA folder (e.g. pa2-debug-a- is a prefix).
+Where dataset prefix is the prefix to one of the datasets in the DATA folder (e.g. PA3-A-Debug- is a prefix).

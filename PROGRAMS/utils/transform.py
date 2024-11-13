@@ -24,7 +24,14 @@ class FT:
         return np.dot(self.R, pts.T).T + self.t
 
     def inverse(self):
-        """Compute the inverse of the transformation."""
+        """Compute the inverse of the transformation.
+
+        Params:
+            None
+
+        Returns:
+            FT: Inverse of the transformation
+        """
         R_inv = self.R.T
         t_inv = -R_inv @ self.t.T
         return FT(R_inv, t_inv.T)

@@ -14,7 +14,15 @@ current_script_path = os.path.abspath(__file__)
 CUR_DIR = os.path.dirname(current_script_path)
 
 def get_file_paths(dataset_prefix: str):
-    """Returns the file paths for the dataset files."""
+    """Returns the file paths for the dataset files.
+
+    Params:
+        dataset_prefix (str): the dataset prefix (e.g. PA3-A-Debug-)
+
+    Returns:
+        Tuple[str, str, str, str]: file paths for bodyA, bodyB, mesh, and sample readings
+
+    """
     problem_name = "Problem3" if "pa3" in dataset_prefix else "Problem5" if "pa5" in dataset_prefix else "Problem4"
     body_a_file_name = f"{problem_name}-BodyA.txt"
     body_b_file_name = f"{problem_name}-BodyB.txt"
@@ -26,8 +34,16 @@ def get_file_paths(dataset_prefix: str):
     sample_readings_path = os.path.join(CUR_DIR, f"../DATA/{sample_readings_file_name}")
     return body_a_path, body_b_path, mesh_path, sample_readings_path
 
-def retrieve_data(dataset_prefix: str) -> Tuple[dict, dict, dict, List[dict], int]:
-    """Retrieve and parse all necessary data based on the dataset prefix."""
+def retrieve_data(dataset_prefix: str):
+    """Retrieve and parse all necessary data based on the dataset prefix.
+
+    Params:
+        dataset_prefix (str): the dataset prefix (e.g. PA3-A-Debug-)
+
+    Returns:
+        Tuple[dict, dict, dict, List[dict], int]: bodyA, bodyB, mesh, sample readings, and num
+
+    """
     body_a_path, body_b_path, mesh_path, sample_readings_path = get_file_paths(dataset_prefix)
     body_a = parse_body(body_a_path)
     body_b = parse_body(body_b_path)
@@ -35,16 +51,40 @@ def retrieve_data(dataset_prefix: str) -> Tuple[dict, dict, dict, List[dict], in
     sample_readings, num = parse_samplereadings(sample_readings_path, body_a["N"], body_b["N"])
     return body_a, body_b, mesh, sample_readings, num
 
-def compute_displacement_vec(F_A: any, F_B: any, A_tip: np.ndarray) -> np.ndarray:
-    """Compute the displacement vector d_k."""
+def compute_displacement_vec(F_A, F_B, A_tip):
+    """Compute the displacement vector d_k.
+
+    Params:
+        F_A (FT): transformation matrix for body A
+        F_B (FT): transformation matrix for body B
+        A_tip (np.ndarray): tip of body A
+
+    Returns:
+        np.ndarray: displacement vector d_k
+
+    """
     F_B_inv = F_B.inverse()
     A_tip_homogeneous = A_tip.reshape(1, 3)
     A_tip_tracker = F_A.transform_pts(A_tip_homogeneous)[0]
     return F_B_inv.transform_pts(A_tip_tracker.reshape(1, 3))[0]
 
 def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dict, mesh: dict, kdtree: any,
-                  triangle_indices_list: List) -> Tuple[np.ndarray, np.ndarray, float, float, float]:
-    """Process a single frame and return the computed values."""
+                  triangle_indices_list: List):
+    """Process a single frame and return the computed values.
+
+    Params:
+        k (int): frame index
+        sample_readings (List[dict]): sample readings
+        body_a (dict): body A data
+        body_b (dict): body B data
+        mesh (dict): mesh data
+        kdtree (any): KDTree for closest point search
+        triangle_indices_list (List): triangle indices list
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray, float, float, float]: c_k, s_k, distance_k, elapsed_slow, elapsed_fast
+
+    """
 
     # Get markers for body A and body B
     A_markers_tracker, B_markers_tracker = sample_readings[k]["A"], sample_readings[k]["B"]
@@ -79,6 +119,16 @@ def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dic
     return c_k_slow, s_k, distance_k_slow, elapsed_slow, elapsed_fast
 
 def calculate_and_output_mse(data: list, dataset_prefix: str):
+    """Calculate and output the Mean Squared Error (MSE) for the dataset.
+
+    Args:
+        data: list of lists of data
+        dataset_prefix: prefix of the dataset
+
+    Returns:
+        None
+
+    """
     if "Debug" in dataset_prefix:
         output_file_path = os.path.join(CUR_DIR, f"../DATA/{dataset_prefix}Output.txt")
         output_data = parse_output(output_file_path)
@@ -96,6 +146,16 @@ def calculate_and_output_mse(data: list, dataset_prefix: str):
 
 
 def print_performance_improvements(slow_time: float, fast_time: float):
+    """ Print the performance improvements of the fast method over the slow method.
+
+    Args:
+        slow_time (float): time taken by the slow method
+        fast_time (float): time taken by the fast method
+
+    Returns:
+        None
+
+    """
     print("Slow Method Time: {:.5f} seconds".format(slow_time))
     print("Fast Method Time: {:.5f} seconds".format(fast_time))
     speedup = slow_time / fast_time if slow_time > 0 else float("-1")
@@ -136,6 +196,7 @@ def main(dataset_prefix: str):
 
 def full_run():
     """Runs the main function on every dataset in the DATA folder."""
+
     for prefix in dataset_prefixes:
         main(prefix)
 

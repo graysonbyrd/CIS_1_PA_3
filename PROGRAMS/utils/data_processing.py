@@ -75,7 +75,7 @@ def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
     in the homework description.
 
     Params:
-        path (str): file path to the samplereadingstest.text file
+        path (str): file path to the samplereadingstest.txt file
 
     Returns:
         List: list of dictionaries containing the A, B, and D values
@@ -92,9 +92,7 @@ def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
     idx = 1
     samples = list()
     for _ in range(N_samples):
-        A = list()
-        B = list()
-        D = list()
+        A, B, D = list(), list(), list
         for i in range(N_A):
             A.append([float(x) for x in data[idx + i].split(" ") if x != ""])
         idx += N_A
@@ -108,6 +106,14 @@ def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
     return samples, num
 
 def parse_output(path: str):
+    """Parse the output file to get the output data.
+
+    Args:
+        path (str): path to the output file
+
+    Returns:
+        list: list of lists containing the output data
+    """
     assert "Output" in path, "Wrong file."
     with open(path, "r") as file:
         output_data = file.readlines()
@@ -121,6 +127,18 @@ def parse_output(path: str):
     return parsed_output_data
 
 def save_output(dataset_prefix: str, num_frames: int, data: list, num: int):
+    """Save the output data to a file.
+
+    Args:
+        dataset_prefix (str): the prefix of the input dataset
+        num_frames (int): number of frames
+        data (list): list of lists containing the output data
+        num (int): number from an input dataset that is propagated to the output file
+
+    Returns:
+        None
+
+    """
     output_file_name = f"{dataset_prefix}Output.txt"
     output_dir = os.path.join(CUR_DIR, "../../OUTPUT")
     os.makedirs(output_dir, exist_ok=True)

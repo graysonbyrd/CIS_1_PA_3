@@ -8,4 +8,10 @@ class KDTreeNode:
         self.left, self.right, self.median = None, None, None
 
     def is_leaf(self):
+        """Check if the node is a leaf
+
+        Returns:
+            bool: True if KDTreeNode is a leaf, False otherwise
+        """
+
         return self.left is None and self.right is None
