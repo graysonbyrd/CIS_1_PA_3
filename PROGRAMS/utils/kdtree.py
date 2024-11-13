@@ -46,7 +46,7 @@ class KDTree:
                 if len(best) < k:
                     best.append((dist, int(idx)))
                 elif dist < best[-1][0]:
-                    best[-1] = (dist, int(idx)) # a fairly elegant way of replacing farthest element in list with closer element
+                    best[-1] = (dist, int(idx)) # replaces farthest element in list with closer element
                 best.sort(key=lambda x: x[0])
 
         # Checks if we need to search the other side

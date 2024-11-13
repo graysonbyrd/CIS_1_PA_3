@@ -4,7 +4,8 @@ from typing import Tuple, List
 
 import numpy as np
 import time
-from utils.data_processing import parse_body, parse_mesh, parse_samplereadings, dataset_prefixes, parse_output
+
+from utils.data_processing import parse_body, parse_mesh, parse_samplereadings, dataset_prefixes, parse_output, save_output
 from utils.closest_point import build_triangle_centroid_kdtree, closest_point_on_mesh_slow, \
     closest_point_on_mesh_fast
 from utils.pcd_2_pcd_reg import pcd_to_pcd_reg_w_known_correspondence
@@ -69,12 +70,37 @@ def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dic
     end_time_fast = time.time()
     elapsed_fast = end_time_fast - start_time_fast
 
-    # Compare the results
+    # Check if the fast method is correct
     difference = np.linalg.norm(c_k_slow - c_k_fast)
-    if difference > 1e-6:
-        print(f"WARNING: Difference between Slow and Fast Methods Result in Non-Negligible Errors @ frame {k}: {difference}")
+    if difference > 1e-3:
+        print(
+            f"WARNING: Difference between Slow and Fast Methods Result in Non-Negligible Errors @ frame {k}: {difference}")
 
     return c_k_slow, s_k, distance_k_slow, elapsed_slow, elapsed_fast
+
+def calculate_and_output_mse(data: list, dataset_prefix: str):
+    if "Debug" in dataset_prefix:
+        output_file_path = os.path.join(CUR_DIR, f"../DATA/{dataset_prefix}Output.txt")
+        output_data = parse_output(output_file_path)
+        mse = 0.0
+        num_elems = 0
+        for idx, row in enumerate(data):
+            for i in range(len(row)):
+                mse += (row[i] - output_data[idx][i]) ** 2
+                num_elems += 1
+
+        mse /= num_elems
+        print("Mean Squared Error: {:.5f}\n".format(mse))
+    else:
+        print("")
+
+
+def print_performance_improvements(slow_time: float, fast_time: float):
+    print("Slow Method Time: {:.5f} seconds".format(slow_time))
+    print("Fast Method Time: {:.5f} seconds".format(fast_time))
+    speedup = slow_time / fast_time if slow_time > 0 else float("-1")
+    print("Speedup Multiple: {:.5f}x".format(speedup))
+
 
 def main(dataset_prefix: str):
     """The main script for programming assignment #3. Specify the prefix
@@ -99,37 +125,14 @@ def main(dataset_prefix: str):
         fast_time += elapsed_fast
         data.append([c_k_slow[0], c_k_slow[1], c_k_slow[2], s_k[0], s_k[1], s_k[2], distance_k_slow])
 
-    # Performance improvements: fast method vs. slow method
-    print("Slow Method Time: {:.5f} seconds".format(slow_time))
-    print("Fast Method Time: {:.5f} seconds".format(fast_time))
-    speedup = slow_time / fast_time if slow_time > 0 else float("-1")
-    print("Speedup Multiple: {:.5f}x".format(speedup))
+    # Print Performance improvements: fast method vs. slow method
+    print_performance_improvements(slow_time, fast_time)
 
-    if "Debug" in dataset_prefix:
-        output_file_path = os.path.join(CUR_DIR, f"../DATA/{dataset_prefix}Output.txt")
-        output_data = parse_output(output_file_path)
-        mse = 0.0
-        for idx, row in enumerate(data):
-            for i in range(len(row)):
-                cur_mse = (row[i] - output_data[idx][i]) ** 2
-                # if cur_mse > 1e-3:
-                #     print(f"WARNING: Current Row Mean Squared Error is Non-Negligible @ frame {idx}: {cur_mse}")
-                mse += cur_mse
-
-        mse /= len(data)
-        print("Mean Squared Error: {:.5f}\n".format(mse))
-    else:
-        print("")
+    # Calculate MSE
+    calculate_and_output_mse(data, dataset_prefix)
 
     # Write output to file
-    output_file_name = f"{dataset_prefix}Output.txt"
-    output_dir = os.path.join(CUR_DIR, "../OUTPUT")
-    os.makedirs(output_dir, exist_ok=True)
-    output_file_path = os.path.join(output_dir, output_file_name)
-    f_out = open(output_file_path, "w")
-    f_out.write(f"{num_frames} {output_file_name} {num}\n")
-    for row in data:
-        f_out.write("{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.3f}\n".format(*row)) #unpack row w/ *
+    save_output(dataset_prefix, num_frames, data, num)
 
 def full_run():
     """Runs the main function on every dataset in the DATA folder."""

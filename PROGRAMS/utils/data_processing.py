@@ -1,5 +1,6 @@
-from typing import Dict, List
 import numpy as np
+import os
+from typing import Dict, List
 
 dataset_prefixes = [
     "PA3-A-Debug-",
@@ -12,6 +13,9 @@ dataset_prefixes = [
     "PA3-H-Unknown-",
     "PA3-J-Unknown-"
 ]
+
+current_script_path = os.path.abspath(__file__)
+CUR_DIR = os.path.dirname(current_script_path)
 
 def parse_body(path: str):
     """Parses a body.txt file according to the specifications
@@ -116,7 +120,15 @@ def parse_output(path: str):
 
     return parsed_output_data
 
-
+def save_output(dataset_prefix: str, num_frames: int, data: list, num: int):
+    output_file_name = f"{dataset_prefix}Output.txt"
+    output_dir = os.path.join(CUR_DIR, "../../OUTPUT")
+    os.makedirs(output_dir, exist_ok=True)
+    output_file_path = os.path.join(output_dir, output_file_name)
+    f_out = open(output_file_path, "w")
+    f_out.write(f"{num_frames} {output_file_name} {num}\n")
+    for row in data:
+        f_out.write("{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.3f}\n".format(*row)) #unpack row w/ *
 
 
 if __name__ == "__main__":
