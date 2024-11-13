@@ -145,7 +145,7 @@ def calculate_and_output_mse(data: list, dataset_prefix: str):
         print("")
 
 
-def print_performance_improvements(slow_time: float, fast_time: float):
+def print_performance_improvements(slow_time: float, fast_time: float, dataset_prefix: str):
     """ Print the performance improvements of the fast method over the slow method.
 
     Args:
@@ -156,6 +156,7 @@ def print_performance_improvements(slow_time: float, fast_time: float):
         None
 
     """
+    print(f"Performance Metrics for {dataset_prefix}")
     print("Slow Method Time: {:.5f} seconds".format(slow_time))
     print("Fast Method Time: {:.5f} seconds".format(fast_time))
     speedup = slow_time / fast_time if slow_time > 0 else float("-1")
@@ -186,7 +187,7 @@ def main(dataset_prefix: str):
         data.append([c_k_slow[0], c_k_slow[1], c_k_slow[2], s_k[0], s_k[1], s_k[2], distance_k_slow])
 
     # Print Performance improvements: fast method vs. slow method
-    print_performance_improvements(slow_time, fast_time)
+    print_performance_improvements(slow_time, fast_time, dataset_prefix)
 
     # Calculate MSE
     calculate_and_output_mse(data, dataset_prefix)

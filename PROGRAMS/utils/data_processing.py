@@ -71,11 +71,11 @@ def parse_mesh(path: str):
     return {"V": np.array(V), "i": np.array(I), "n": np.array(N)}
 
 def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
-    """Parses a samplereadingstest.txt file according to the specifications
+    """Parses a samplereadings txt file according to the specifications
     in the homework description.
 
     Params:
-        path (str): file path to the samplereadingstest.txt file
+        path (str): file path to the samplereadings txt file
 
     Returns:
         List: list of dictionaries containing the A, B, and D values
@@ -83,31 +83,31 @@ def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
     """
     assert "SampleReadings" in path, "Wrong file."
     with open(path, "r") as file:
-        data = file.readlines()
-    for idx, line in enumerate(data):
-        data[idx] = line.replace(",", "")
-    N_S, N_samples, _, num = data[0].split(" ")
+        samplereadings_data = file.readlines()
+    for idx, line in enumerate(samplereadings_data):
+        samplereadings_data[idx] = line.replace(",", "")
+    N_S, N_samples, _, num = samplereadings_data[0].split(" ")
     N_S, N_samples, num = int(N_S), int(N_samples), int(num) # N_S = N_A + N_B + N_D
     N_D = N_S - N_A - N_B
     idx = 1
     samples = list()
     for _ in range(N_samples):
-        A, B, D = list(), list(), list
+        A, B, D = list(), list(), list()
         for i in range(N_A):
-            A.append([float(x) for x in data[idx + i].split(" ") if x != ""])
+            A.append([float(x) for x in samplereadings_data[idx + i].split(" ") if x != ""])
         idx += N_A
         for i in range(N_B):
-            B.append([float(x) for x in data[idx + i].split(" ") if x != ""])
+            B.append([float(x) for x in samplereadings_data[idx + i].split(" ") if x != ""])
         idx += N_B
         for i in range(N_D):
-            D.append([float(x) for x in data[idx + i].split(" ") if x != ""])
+            D.append([float(x) for x in samplereadings_data[idx + i].split(" ") if x != ""])
         idx += N_D
         samples.append({"A": np.array(A), "B": np.array(B), "D": np.array(D)})
     return samples, num
 
 def parse_output(path: str):
-    """Parse the output file to get the output data.
-
+    """
+    Parse the output file to get the output data.
     Args:
         path (str): path to the output file
 
@@ -127,7 +127,8 @@ def parse_output(path: str):
     return parsed_output_data
 
 def save_output(dataset_prefix: str, num_frames: int, data: list, num: int):
-    """Save the output data to a file.
+    """
+    Save the output data to a file.
 
     Args:
         dataset_prefix (str): the prefix of the input dataset
@@ -136,7 +137,6 @@ def save_output(dataset_prefix: str, num_frames: int, data: list, num: int):
         num (int): number from an input dataset that is propagated to the output file
 
     Returns:
-        None
 
     """
     output_file_name = f"{dataset_prefix}Output.txt"
