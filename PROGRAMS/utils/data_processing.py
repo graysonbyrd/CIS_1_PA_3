@@ -66,7 +66,7 @@ def parse_mesh(path: str):
 
     return {"V": np.array(V), "i": np.array(I), "n": np.array(N)}
 
-def parse_samplereadings(path: str, N_A, N_B) -> List[Dict]:
+def parse_samplereadings(path: str, N_A, N_B) -> (List[Dict], int):
     """Parses a samplereadingstest.txt file according to the specifications
     in the homework description.
 
@@ -82,8 +82,8 @@ def parse_samplereadings(path: str, N_A, N_B) -> List[Dict]:
         data = file.readlines()
     for idx, line in enumerate(data):
         data[idx] = line.replace(",", "")
-    N_S, N_samples, _, _ = data[0].split(" ")
-    N_S, N_samples = int(N_S), int(N_samples) # N_S = N_A + N_B + N_D
+    N_S, N_samples, _, num = data[0].split(" ")
+    N_S, N_samples, num = int(N_S), int(N_samples), int(num) # N_S = N_A + N_B + N_D
     N_D = N_S - N_A - N_B
     idx = 1
     samples = list()
@@ -101,7 +101,22 @@ def parse_samplereadings(path: str, N_A, N_B) -> List[Dict]:
             D.append([float(x) for x in data[idx + i].split(" ") if x != ""])
         idx += N_D
         samples.append({"A": np.array(A), "B": np.array(B), "D": np.array(D)})
-    return samples
+    return samples, num
+
+def parse_output(path: str):
+    assert "Output" in path, "Wrong file."
+    with open(path, "r") as file:
+        output_data = file.readlines()
+
+    parsed_output_data = list()
+    for idx, line in enumerate(output_data):
+        if idx == 0:
+            continue
+        parsed_output_data.append([float(x) for x in line.split(" ") if x != ""])
+
+    return parsed_output_data
+
+
 
 
 if __name__ == "__main__":
@@ -116,7 +131,7 @@ if __name__ == "__main__":
     print("Parsed Body B: ", body_b)
 
     path = "/Users/akhildeo/Desktop/Johns-Hopkins/Senior-Class-Materials/Fall/CIS/CIS_PA3_4_5/DATA/PA3-A-Debug-SampleReadingsTest.txt"
-    data = parse_samplereadings(path, N_a, N_b)
+    data, _ = parse_samplereadings(path, N_a, N_b)
     print("Sample Readings Parse: ", data)
 
     path = "/Users/akhildeo/Desktop/Johns-Hopkins/Senior-Class-Materials/Fall/CIS/CIS_PA3_4_5/DATA/Problem3MeshFile.sur"

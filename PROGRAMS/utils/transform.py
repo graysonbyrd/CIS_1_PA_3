@@ -23,6 +23,12 @@ class FT:
             raise ValueError(f"Points must be of shape (n, 3), not (n, {pts.shape[1]})")
         return np.dot(self.R, pts.T).T + self.t
 
+    def inverse(self):
+        """Compute the inverse of the transformation."""
+        R_inv = self.R.T
+        t_inv = -R_inv @ self.t.T
+        return FT(R_inv, t_inv.T)
+
     def inverse_transform_pts(self, pts: np.ndarray):
         """Uses the inverse of the transform to transform a set of points from
         one coordinate frame to another.
