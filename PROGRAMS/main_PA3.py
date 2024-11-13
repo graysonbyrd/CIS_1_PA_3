@@ -1,7 +1,6 @@
 import os
 from argparse import ArgumentParser
-from PROGRAMS.utils.data_processing import parse_body, parse_mesh, parse_samplereadings
-from utils.data_processing import dataset_prefixes
+from utils.data_processing import parse_body, parse_mesh, parse_samplereadings, dataset_prefixes
 
 current_script_path = os.path.abspath(__file__)
 CUR_DIR = os.path.dirname(current_script_path)
@@ -10,7 +9,7 @@ def get_file_paths(dataset_prefix: str):
     """Returns the file paths for the dataset files."""
     problem_name = "Problem3" if "pa3" in dataset_prefix else "Problem5" if "pa5" in dataset_prefix else "Problem4"
     body_a_file_name = f"{problem_name}-BodyA.txt"
-    body_b_file_name = f"{problem_name}BodyB.txt"
+    body_b_file_name = f"{problem_name}-BodyB.txt"
     mesh_file_name = f"{problem_name}MeshFile.sur"
     sample_readings_file_name = f"{dataset_prefix}SampleReadingsTest.txt"
     body_a_path = os.path.join(CUR_DIR, f"../DATA/{body_a_file_name}")

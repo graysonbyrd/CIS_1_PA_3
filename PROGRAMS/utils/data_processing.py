@@ -2,15 +2,15 @@ from typing import Dict, List
 import numpy as np
 
 dataset_prefixes = [
-    "pa3-A-Debug-",
-    "pa3-B-Debug-",
-    "pa3-C-Debug-",
-    "pa3-D-Debug-",
-    "pa3-E-Debug-",
-    "pa3-F-Debug-",
-    "pa3-G-Unknown-",
-    "pa3-H-Unknown-",
-    "pa3-J-Unknown-"
+    "PA3-A-Debug-",
+    "PA3-B-Debug-",
+    "PA3-C-Debug-",
+    "PA3-D-Debug-",
+    "PA3-E-Debug-",
+    "PA3-F-Debug-",
+    "PA3-G-Unknown-",
+    "PA3-H-Unknown-",
+    "PA3-J-Unknown-"
 ]
 
 def parse_body(path: str):
