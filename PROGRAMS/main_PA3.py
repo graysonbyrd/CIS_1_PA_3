@@ -55,7 +55,7 @@ def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dic
 
     # Compute displacement d_k and s_k
     d_k = compute_displacement_vec(F_A_k, F_B_k, body_a["t"])
-    s_k = d_k  # Because F_reg = I, I think?
+    s_k = d_k  # Because F_reg = I, so s_k = F_reg * d_k = d_k
 
     # Slow method
     start_time_slow = time.time()
