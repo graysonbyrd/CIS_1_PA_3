@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 
 current_script_path = os.path.abspath(__file__)
