@@ -106,13 +106,13 @@ def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dic
 
     # Fast method
     start_time_fast = time.time()
-    c_k_fast, distance_k_fast = closest_point_on_mesh_fast(s_k, mesh, kdtree, triangle_indices_list, num_neighbors=5)
+    c_k_fast, distance_k_fast = closest_point_on_mesh_fast(s_k, mesh, kdtree, triangle_indices_list, num_neighbors=10)
     end_time_fast = time.time()
     elapsed_fast = end_time_fast - start_time_fast
 
     # Check if the fast method is correct
     difference = np.linalg.norm(c_k_slow - c_k_fast)
-    if difference > 1e-3:
+    if not np.allclose(c_k_slow, c_k_fast, atol=1e-6):
         print(
             f"WARNING: Difference between Slow and Fast Methods Result in Non-Negligible Errors @ frame {k}: {difference}")
 
