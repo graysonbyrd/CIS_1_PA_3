@@ -1,8 +1,14 @@
 import numpy as np
 import random
 from scipy.spatial import ConvexHull, Delaunay
+import os
+current_script_path = os.path.abspath(__file__)
+CUR_DIR = os.path.dirname(current_script_path)
 
 from utils.closest_point import closest_point_on_mesh_slow, closest_point_on_mesh_fast, build_triangle_centroid_kdtree
+
+random.seed(42)
+np.random.seed(42)
 
 def generate_random_convex_polygon(N):
     """Generates a random convex polygon.
@@ -141,6 +147,11 @@ def test_closest_point_algorithm_slow():
     pred_closest = np.array(pred_closest)
     pred_dists = np.array(pred_dists)
 
+    with open(f"{CUR_DIR}/test_closest_point_results_slow.txt", "w") as file:
+        mse = np.average((pred_closest-nearest_points)**2)
+        file.write(f"MSE: {mse}\n")
+        file.writelines([f"{x} - {y}\n" for x, y in zip(pred_closest, nearest_points)])
+
     assert np.isclose(np.average((pred_closest-nearest_points)**2) + np.average((pred_dists-distances)**2), 0)
  
 
@@ -163,6 +174,9 @@ def test_closest_point_algorithm_fast():
 
     pred_closest = np.array(pred_closest)
     pred_dists = np.array(pred_dists)
-
+    with open(f"{CUR_DIR}/test_closest_point_results_fast.txt", "w") as file:
+        mse = np.average((pred_closest-nearest_points)**2)
+        file.write(f"MSE: {mse}\n")
+        file.writelines([f"{x} - {y}\n" for x, y in zip(pred_closest, nearest_points)])
     assert np.isclose(np.average((pred_closest-nearest_points)**2) + np.average((pred_dists-distances)**2), 0)
 
