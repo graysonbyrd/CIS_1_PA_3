@@ -3,6 +3,22 @@ from typing import Dict, Tuple, Iterable
 from .kdtree import KDTree
 
 def find_closest_point(p: np.ndarray, v: np.ndarray, triangles: Iterable[Tuple[int, int, int]]) -> Tuple[np.ndarray, float]:
+    """Given a 3D point, p, a list of vertices, v, and an array of triangles
+    specified by 3 indices corresponding to the idx of the vertex list, return
+    the closest point to the given 3D point that lies on the mesh.
+    
+    Args:
+        p (np.ndarray): query point
+        v (np.ndarray): array of vertices
+        triangles (Iterable[Tuple[int, int, int]]): array of triangles defined
+            by indices of the vertex numpy array
+    
+    Returns:
+        closest_point (np.ndarray): the 3D point on the mesh that is closest to
+            the query point
+        min_dist (np.float): the distance between the query point and the
+            closest point
+    """
     min_dist = float('inf')
     closest_point = None
     for triangle_indices in triangles:
@@ -15,7 +31,21 @@ def find_closest_point(p: np.ndarray, v: np.ndarray, triangles: Iterable[Tuple[i
     return closest_point, min_dist
 
 def closest_point_on_mesh_slow(p: np.ndarray, mesh: Dict) -> Tuple[np.ndarray, float]:
-    """Slow version: Find the closest point on the mesh to point p by checking all triangles."""
+    """Slow version: Find the closest point on the mesh to point p by checking 
+    all triangles.
+    
+    Args:
+        p (np.ndarray): query point
+        mesh (Dict): a dictionary containing a list of vertices in key "V" and
+            a list of triangles in key "i"
+    
+    Returns:
+        closest_point (np.ndarray): the 3D point on the mesh that is closest to
+            the query point
+        min_dist (np.float): the distance between the query point and the
+            closest point
+            
+    """
     return find_closest_point(p, mesh['V'], mesh['i'])
 
 def closest_point_on_mesh_fast(p: np.ndarray, mesh: Dict, kdtree, triangle_indices_list, num_neighbors=5) -> Tuple[np.ndarray, float]:
@@ -24,6 +54,23 @@ def closest_point_on_mesh_fast(p: np.ndarray, mesh: Dict, kdtree, triangle_indic
     Represents option #3 on slide #10 / page #5 in https://ciis.lcsr.jhu.edu/lib/exe/fetch.php?media=courses:455-655:lectures:finding_point-pairs.pdf
     KDTree is a "Hierarchical Data Structure" which works very well for this problem.
     Option 4 (Rotate each level of the tree to align with data) isn't implemented.
+    
+    Args:
+        p (np.ndarray): query point
+        mesh (Dict): a dictionary containing a list of vertices in key "V" and
+                a list of triangles in key "i"
+        kdtree (KDTree): a KD of the centroids of the triangles defined in the
+            mesh
+        triangle_indices_list (List): a list of tuples of indices that define
+            triangles
+        num_neighbors (int): number of nearest neighbors to use when calculating
+            distance
+
+    Returns:
+        closest_point (np.ndarray): the 3D point on the mesh that is closest to
+            the query point
+        min_dist (np.float): the distance between the query point and the
+            closest point
     """
     v = mesh['V']
     distances, indices = kdtree.query(p, k=num_neighbors)
@@ -34,7 +81,18 @@ def closest_point_on_mesh_fast(p: np.ndarray, mesh: Dict, kdtree, triangle_indic
     return find_closest_point(p, v, triangles)
 
 def build_triangle_centroid_kdtree(mesh: Dict):
-    """Build a KDTree of triangle centroids."""
+    """Build a KDTree of triangle centroids.
+    
+    Args:
+        mesh (Dict): a dictionary containing a list of vertices in key "V" and
+                a list of triangles in key "i"
+
+    Returns:
+        kdtree (KDTree): the KDTree built from the mesh
+        centroids (np.ndarra): an array of centroids in the KDTree
+        triangle_indices_list (List): a list of tuples of indices that define
+            triangles
+    """
     v = mesh['V']
     i = mesh['i']
     centroids = []
@@ -52,7 +110,18 @@ def build_triangle_centroid_kdtree(mesh: Dict):
 # Assignment did say that "rigorously debug" this subroutine.
 # Check out page 6 (slide 11 and beyond) of https://ciis.lcsr.jhu.edu/lib/exe/fetch.php?media=courses:455-655:lectures:finding_point-pairs.pdf for guidance
 def closest_point_on_triangle(p: np.ndarray, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
-    """Find the closest point on triangle abc to point p."""
+    """Find the closest point on triangle abc to point p.
+    
+    Args:
+        p (np.ndarray): query point
+        a (np.ndarray): vertex 1 of the triangle
+        b (np.ndarray): vertex 2 of the triangle
+        c (np.ndarray): vertex 3 of the triangle
+
+    Returns:
+        closest_point (np.ndarray): closest point on the triangle to the
+            query point
+    """
 
     e = 1e-8
 

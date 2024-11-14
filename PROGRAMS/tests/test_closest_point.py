@@ -5,7 +5,15 @@ from scipy.spatial import ConvexHull, Delaunay
 from utils.closest_point import closest_point_on_mesh_slow, closest_point_on_mesh_fast, build_triangle_centroid_kdtree
 
 def generate_random_convex_polygon(N):
-    """Generates a random convex polygon."""
+    """Generates a random convex polygon.
+    
+    Args:
+        N (int): number of points in the initial polygon
+
+    Returns:
+        hull (ConvexHull): the scipy Convex Hull object defining the convex
+            polygon    
+    """
     # Generate N random points in 3D space
     points = np.random.rand(N, 3)
     
@@ -77,6 +85,7 @@ def generate_test_closest_point_test_case(num_vertices):
 
     test_pcd, nearest_points, dist = [], [], []
     for t in triangle_indices:
+        
         pt_on_plane = random_point_on_triangle_plane(vertices, t)
         test_pcd.append(pt_on_plane)
         nearest_points.append(pt_on_plane)
