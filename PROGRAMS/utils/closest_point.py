@@ -75,8 +75,6 @@ def closest_point_on_mesh_fast(p: np.ndarray, mesh: Dict, kdtree, triangle_indic
     v = mesh['V']
     distances, indices = kdtree.query(p, k=num_neighbors)
     indices = [indices] if num_neighbors == 1 else np.atleast_1d(indices)
-    # print(f"Indices: {indices}")
-    # print(f"Trianlge indices list: {triangle_indices_list}")
     triangles = [triangle_indices_list[idx] for idx in indices]
     return find_closest_point(p, v, triangles)
 
@@ -105,9 +103,6 @@ def build_triangle_centroid_kdtree(mesh: Dict):
     kdtree = KDTree(centroids)
     return kdtree, centroids, triangle_indices_list
 
-# TODO: Debug this function - Probably wrong?
-# Slow method is incredibly simple, fast method simply uses a kdtree, both use this function.
-# Assignment did say that "rigorously debug" this subroutine.
 # Check out page 6 (slide 11 and beyond) of https://ciis.lcsr.jhu.edu/lib/exe/fetch.php?media=courses:455-655:lectures:finding_point-pairs.pdf for guidance
 def closest_point_on_triangle(p: np.ndarray, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     """Find the closest point on triangle abc to point p.
