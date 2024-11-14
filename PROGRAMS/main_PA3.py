@@ -51,8 +51,8 @@ def retrieve_data(dataset_prefix: str):
     sample_readings, num = parse_samplereadings(sample_readings_path, body_a["N"], body_b["N"])
     return body_a, body_b, mesh, sample_readings, num
 
-def compute_displacement_vec(F_A, F_B, A_tip):
-    """Compute the displacement vector d_k.
+def compute_d_k_vec(F_A, F_B, A_tip):
+    """Compute the vector d_k.
 
     Params:
         F_A (FT): transformation matrix for body A
@@ -60,7 +60,7 @@ def compute_displacement_vec(F_A, F_B, A_tip):
         A_tip (np.ndarray): tip of body A
 
     Returns:
-        np.ndarray: displacement vector d_k
+        np.ndarray: vector d_k
 
     """
     F_B_inv = F_B.inverse()
@@ -94,8 +94,8 @@ def process_frame(k: int, sample_readings: List[dict], body_a: dict, body_b: dic
     F_A_k = pcd_to_pcd_reg_w_known_correspondence(A_markers_body, A_markers_tracker)
     F_B_k = pcd_to_pcd_reg_w_known_correspondence(B_markers_body, B_markers_tracker)
 
-    # Compute displacement d_k and s_k
-    d_k = compute_displacement_vec(F_A_k, F_B_k, body_a["t"])
+    # Compute d_k and s_k
+    d_k = compute_d_k_vec(F_A_k, F_B_k, body_a["t"])
     s_k = d_k  # Because F_reg = I, so s_k = F_reg * d_k = d_k
 
     # Slow method
