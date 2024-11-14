@@ -1,4 +1,4 @@
-# Grayson Byrd and Akhil Deo CIS I PA 2
+# Grayson Byrd and Akhil Deo CIS I PA 3
 
 ## Installation
 Navigate to the PROGRAMS/ directory and run the following to create the required programming environment to run the code.
